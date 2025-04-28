@@ -38,7 +38,7 @@ void AKSGameModeBase::NewDay()
 	UpdateTime();
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 1.0f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 10.0f, true);
 }
 
 void AKSGameModeBase::UpdateTime()
