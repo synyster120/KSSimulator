@@ -17,4 +17,7 @@ class KSSIMULATOR_API UGameMainWidget : public UUserWidget
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget));
 	class UTextBlock* MoneyValue;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget));
+	class UTextBlock* Time;
 };

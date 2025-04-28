@@ -16,8 +16,7 @@ void AKSGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetMoney(500);
-	SetRating(0.5f);
+	Money = 0;
 
 	if (MainUIClass != nullptr)
 	{
@@ -25,10 +24,35 @@ void AKSGameModeBase::BeginPlay()
 		if (MainUI)
 		{
 			MainUI->AddToViewport();
-			MainUI->MoneyValue->SetText(FText::AsNumber(GetMoney()));
+			SetMoney(0);
+			NewDay();
 		}
 	}
-	SetMoney(1000);
+}
+
+void AKSGameModeBase::NewDay()
+{
+	Time = 500;
+
+	SetMoney(0);
+	UpdateTime();
+	
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 1.0f, true);
+}
+
+void AKSGameModeBase::UpdateTime()
+{
+	Time += 10;
+
+	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 780) / 60)
+		+ ":" + FString::Printf(TEXT("%02d"), Time % 60) 
+		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
+	UE_LOG(LogTemp, Warning, TEXT("%d, %s"), Time, *TimeStr);
+	if (MainUI)
+	{
+		MainUI->Time->SetText(FText::FromString(TimeStr));
+	}
 }
 
 void AKSGameModeBase::SetMoney(int32 M)

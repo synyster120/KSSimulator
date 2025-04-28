@@ -28,10 +28,17 @@ protected:
 	class UGameMainWidget* MainUI;
 
 private:
-	int32 Money = 10000;
+	int32 Money;
 	int32 WorldTime = 0;
 	int32 Level = 1;
 	float Rating = 4.0f;
+	int32 Time = 0;
+	FString TimeStr;
+
+	FTimerHandle TimerHandle;
+
+	void NewDay();
+	void UpdateTime();
 
 public:
 	void SetMoney(int32 M);
