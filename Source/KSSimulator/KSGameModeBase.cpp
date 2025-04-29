@@ -24,6 +24,7 @@ void AKSGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	PC = UGameplayStatics::GetPlayerController(this, 0);
 	Money = 50000;
 	for (int32 i = 0;i < 5;i++) FoodCount[i] = 10;
 
@@ -47,6 +48,11 @@ void AKSGameModeBase::NewDay()
 	{
 		OW->RemoveFromViewport();
 	}
+	if (PC)
+	{
+		PC->bShowMouseCursor = false;
+		PC->SetInputMode(FInputModeGameOnly());
+	}
 	TimeDilationSet(1.f);
 
 	Time = 500;
@@ -54,7 +60,7 @@ void AKSGameModeBase::NewDay()
 	UpdateTime();
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.5f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 1.f, true);
 }
 
 void AKSGameModeBase::UpdateTime()
@@ -119,7 +125,7 @@ void AKSGameModeBase::TimeDilationSet(float T)
 void AKSGameModeBase::BeforeEndDay()
 {
 	TimeDilationSet(0.f);
-	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+
 	if (PC)
 	{
 		PC->bShowMouseCursor = true;

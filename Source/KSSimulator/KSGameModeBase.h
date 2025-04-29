@@ -40,6 +40,7 @@ private:
 	int32 FoodCount[5];
 
 	FTimerHandle TimerHandle;
+	APlayerController* PC;
 
 	void UpdateTime();
 
