@@ -10,24 +10,24 @@
  * 
  */
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FIngredientInfo {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString Name;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Price;
 };
 
-UCLASS()
+UCLASS(BlueprintType)
 class KSSIMULATOR_API UIngredient : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FIngredientInfo> Items;
 
 	//image, etc
