@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Ingredient.h"
 #include "Food.h"
+#include "OrderManager.h"
 #include "KSGameModeBase.generated.h"
 
 /**
@@ -38,6 +39,7 @@ private:
 	int32 Day = 0;
 	FString TimeStr;
 	int32 FoodCount[5];
+	bool IsOpen = false;
 
 	FTimerHandle TimerHandle;
 	APlayerController* PC;
@@ -49,6 +51,8 @@ public:
 	UFood* Fo;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UIngredient* In;
+	UPROPERTY()
+	UOrderManager* OrderManager;
 
 	void SetMoney(int32 M);
 	int32 GetMoney();
@@ -56,7 +60,11 @@ public:
 	float GetRating();
 	void SetIngreCount(int32 Index, int32 Value);
 	int32 GetIngreCount(int32 Index);
+	
 	void TimeDilationSet(float T);
 	void BeforeEndDay();
 	void NewDay();
+	
+	void SetOpen();
+	bool GetOpen();
 };

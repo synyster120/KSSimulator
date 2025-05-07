@@ -25,6 +25,7 @@ void AKSGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	PC = UGameplayStatics::GetPlayerController(this, 0);
+	OrderManager = NewObject<UOrderManager>(this);
 	Money = 50000;
 	for (int32 i = 0;i < 5;i++) FoodCount[i] = 10;
 
@@ -33,6 +34,7 @@ void AKSGameModeBase::BeginPlay()
 		MainUI = CreateWidget<UGameMainWidget>(GetWorld(), MainUIClass);
 		if (MainUI)
 		{
+			OrderManager->SetWidget(MainUI);
 			MainUI->AddToViewport();
 			SetMoney(0);
 			NewDay();
@@ -43,6 +45,7 @@ void AKSGameModeBase::BeginPlay()
 void AKSGameModeBase::NewDay()
 {
 	Day += 1;
+	IsOpen = false;
 
 	if (OW)
 	{
@@ -60,13 +63,17 @@ void AKSGameModeBase::NewDay()
 	UpdateTime();
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 1.f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);
+}
+
+void AKSGameModeBase::SetOpen()
+{
+	IsOpen = !IsOpen;
 }
 
 void AKSGameModeBase::UpdateTime()
 {
 	Time += 10;
-
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60) 
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
@@ -75,7 +82,6 @@ void AKSGameModeBase::UpdateTime()
 	{
 		MainUI->Time->SetText(FText::FromString(TimeStr));
 	}
-
 	if (Time == 1080)
 	{
 		BeforeEndDay();
@@ -88,7 +94,7 @@ void AKSGameModeBase::SetMoney(int32 M)
 
 	if (MainUI)
 	{
-		MainUI->MoneyValue->SetText(FText::AsNumber(GetMoney()));
+		MainUI->MoneyValue->SetText(FText::AsNumber(Money));
 	}
 }
 
@@ -100,6 +106,12 @@ int32 AKSGameModeBase::GetMoney()
 void AKSGameModeBase::SetRating(float R)
 {
 	Rating += R;
+	if (Rating < 0) Rating = 0;
+	else if (Rating > 5) Rating = 5.0f;
+	if (MainUI)
+	{
+		MainUI->RatingValue->SetText(FText::AsNumber(Rating));
+	}
 }
 
 float AKSGameModeBase::GetRating()
