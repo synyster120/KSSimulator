@@ -76,6 +76,11 @@ void AKSGameModeBase::SetOpen()
 	IsOpen = !IsOpen;
 }
 
+bool AKSGameModeBase::GetOpen()
+{
+	return false;
+}
+
 void AKSGameModeBase::SetTable(int TableNum)
 {
 	IsTableFull[TableNum] = !IsTableFull[TableNum];
