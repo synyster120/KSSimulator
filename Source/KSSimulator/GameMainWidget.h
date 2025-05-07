@@ -20,4 +20,13 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget));
 	class UTextBlock* Time;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget));
+	class UTextBlock* RatingValue;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget));
+	class UTextBlock* OrderText;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget));
+	class UVerticalBox* OrderListBox;
 };
