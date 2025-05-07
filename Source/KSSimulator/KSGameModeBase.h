@@ -41,7 +41,9 @@ private:
 	void UpdateTime();
 
 public:
-	void SetMoney(int32 M);
+	UFUNCTION(BlueprintCallable) // 블루프린트에서 사용가능한 함수로 지정
+		void SetMoney(int32 M);
+
 	int32 GetMoney();
 	void SetRating(float R);
 	float GetRating();

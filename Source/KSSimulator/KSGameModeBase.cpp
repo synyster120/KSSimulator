@@ -17,6 +17,8 @@ void AKSGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	Money = 0;
+	
+
 
 	if (MainUIClass != nullptr)
 	{
