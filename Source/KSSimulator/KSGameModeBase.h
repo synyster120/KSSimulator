@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Ingredient.h"
+#include "Food.h"
+#include "OrderManager.h"
 #include "KSGameModeBase.generated.h"
 
 /**
@@ -21,11 +24,11 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	//UPROPERTY(VisibleAnywhere)
 	TSubclassOf<class UGameMainWidget> MainUIClass;
-
-	//UPROPERTY(VisibleAnywhere)
 	class UGameMainWidget* MainUI;
+
+	TSubclassOf<class UOrderingWidget> OWClass;
+	class UOrderingWidget* OW;
 
 private:
 	int32 Money;
@@ -33,18 +36,54 @@ private:
 	int32 Level = 1;
 	float Rating = 4.0f;
 	int32 Time = 0;
+	int32 Day = 0;
 	FString TimeStr;
+	int32 FoodCount[5];
+	bool IsTableFull[5];
+	bool IsOpen = false;
 
 	FTimerHandle TimerHandle;
+	APlayerController* PC;
 
-	void NewDay();
 	void UpdateTime();
 
 public:
-	UFUNCTION(BlueprintCallable) // 블루프린트에서 사용가능한 함수로 지정
-		void SetMoney(int32 M);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UFood* Fo;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UIngredient* In;
+	UPROPERTY()
+	UOrderManager* OrderManager;
 
+	UFUNCTION(BlueprintCallable)
+	void SetMoney(int32 M);
+
+	UFUNCTION(BlueprintCallable)
 	int32 GetMoney();
+
+	UFUNCTION(BlueprintCallable)
 	void SetRating(float R);
+
+	UFUNCTION(BlueprintCallable)
 	float GetRating();
+
+	void SetIngreCount(int32 Index, int32 Value);
+
+	int32 GetIngreCount(int32 Index);
+
+	void TimeDilationSet(float T);
+	void BeforeEndDay();
+	void NewDay();
+
+	UFUNCTION(BlueprintCallable)
+	void SetOpen();
+
+	UFUNCTION(BlueprintCallable)
+	bool GetOpen();
+
+	UFUNCTION(BlueprintCallable)
+	void SetTable(int TableNum);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetTable(int TableNum);
 };
