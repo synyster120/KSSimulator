@@ -55,20 +55,35 @@ public:
 	UPROPERTY()
 	UOrderManager* OrderManager;
 
+	UFUNCTION(BlueprintCallable)
 	void SetMoney(int32 M);
+
+	UFUNCTION(BlueprintCallable)
 	int32 GetMoney();
+
+	UFUNCTION(BlueprintCallable)
 	void SetRating(float R);
+
+	UFUNCTION(BlueprintCallable)
 	float GetRating();
+
 	void SetIngreCount(int32 Index, int32 Value);
+
 	int32 GetIngreCount(int32 Index);
-	
+
 	void TimeDilationSet(float T);
 	void BeforeEndDay();
 	void NewDay();
-	
+
+	UFUNCTION(BlueprintCallable)
 	void SetOpen();
+
+	UFUNCTION(BlueprintCallable)
 	bool GetOpen();
 
+	UFUNCTION(BlueprintCallable)
 	void SetTable(int TableNum);
+
+	UFUNCTION(BlueprintCallable)
 	bool GetTable(int TableNum);
 };
