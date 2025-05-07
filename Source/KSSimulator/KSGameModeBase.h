@@ -39,6 +39,7 @@ private:
 	int32 Day = 0;
 	FString TimeStr;
 	int32 FoodCount[5];
+	bool IsTableFull[5];
 	bool IsOpen = false;
 
 	FTimerHandle TimerHandle;
@@ -67,4 +68,7 @@ public:
 	
 	void SetOpen();
 	bool GetOpen();
+
+	void SetTable(int TableNum);
+	bool GetTable(int TableNum);
 };

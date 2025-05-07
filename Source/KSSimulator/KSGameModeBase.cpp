@@ -47,6 +47,11 @@ void AKSGameModeBase::NewDay()
 	Day += 1;
 	IsOpen = false;
 
+	for (int32 i = 0; i < 5;i++)
+	{
+		IsTableFull[i] = false;
+	}
+
 	if (OW)
 	{
 		OW->RemoveFromViewport();
@@ -69,6 +74,16 @@ void AKSGameModeBase::NewDay()
 void AKSGameModeBase::SetOpen()
 {
 	IsOpen = !IsOpen;
+}
+
+void AKSGameModeBase::SetTable(int TableNum)
+{
+	IsTableFull[TableNum] = !IsTableFull[TableNum];
+}
+
+bool AKSGameModeBase::GetTable(int TableNum)
+{
+	return IsTableFull[TableNum];
 }
 
 void AKSGameModeBase::UpdateTime()
