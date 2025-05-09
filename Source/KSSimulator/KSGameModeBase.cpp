@@ -3,6 +3,7 @@
 #include "Widgets/OrderingWidget.h"
 #include "Components/TextBlock.h"
 #include "UObject/ConstructorHelpers.h"
+#include "FadeInOutWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 AKSGameModeBase::AKSGameModeBase()
@@ -17,6 +18,12 @@ AKSGameModeBase::AKSGameModeBase()
 	if (b.Succeeded())
 	{
 		OWClass = b.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UFadeInOutWidget> c(TEXT("/Game/Widgets/BP_FadeInOutWidget.BP_FadeInOutWidget_C"));
+	if (c.Succeeded())
+	{
+		FIOClass = c.Class;
 	}
 }
 
@@ -56,6 +63,15 @@ void AKSGameModeBase::NewDay()
 	{
 		OW->RemoveFromViewport();
 	}
+	if (FIOClass != nullptr)
+	{
+		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
+		if (FIO)
+		{
+			FIO->AddToViewport();
+			FIO->FadeIn();
+		}
+	}
 	if (PC)
 	{
 		PC->bShowMouseCursor = false;
@@ -68,7 +84,20 @@ void AKSGameModeBase::NewDay()
 	UpdateTime();
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, true);
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);
+}
+
+void AKSGameModeBase::FadeInFin()
+{
+	if (FIOClass != nullptr)
+	{
+		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
+		if (FIO)
+		{
+			FIO->RemoveFromViewport();
+		}
+	}
 }
 
 void AKSGameModeBase::SetOpen()
@@ -156,6 +185,22 @@ void AKSGameModeBase::TimeDilationSet(float T)
 
 void AKSGameModeBase::BeforeEndDay()
 {
+	if (FIOClass != nullptr)
+	{
+		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
+		if (FIO)
+		{
+			FIO->AddToViewport();
+			FIO->FadeOut();
+		}
+	}
+
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::EndDay, 2.5f, true);
+}
+
+void AKSGameModeBase::EndDay()
+{
 	TimeDilationSet(0.f);
 
 	if (PC)
@@ -173,6 +218,14 @@ void AKSGameModeBase::BeforeEndDay()
 			MainUI->RemoveFromViewport();
 			MainUI->AddToViewport();
 			MainUI->Time->SetText(FText::FromString(""));
+		}
+	}
+	if (FIOClass != nullptr)
+	{
+		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
+		if (FIO)
+		{
+			FIO->RemoveFromViewport();
 		}
 	}
 }
