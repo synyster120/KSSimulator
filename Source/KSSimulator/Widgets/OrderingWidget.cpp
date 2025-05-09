@@ -16,7 +16,7 @@ void UOrderingWidget::NativeConstruct()
 
     if (BoxClass)
     {
-        for (int32 i = 0; i < 5; ++i) // 예시로 5개 추가
+        for (int32 i = 0; i < 4; ++i) // 예시로 5개 추가
         {
             Box[i] = CreateWidget<UOrderBoxWidget>(GetWorld(), BoxClass);
             if (Box[i])
@@ -30,7 +30,7 @@ void UOrderingWidget::NativeConstruct()
 
 void UOrderingWidget::Refresh()
 {
-    for (int32 i = 0;i < 5;i++) {
+    for (int32 i = 0;i < 4;i++) {
         Box[i]->NewBox(i);
     }
 }

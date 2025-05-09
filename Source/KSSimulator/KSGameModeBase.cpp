@@ -131,7 +131,7 @@ void AKSGameModeBase::UpdateTime()
 	{
 		MainUI->Time->SetText(FText::FromString(TimeStr));
 	}
-	if (Time == 1080)
+	if (Time == 550)
 	{
 		BeforeEndDay();
 	}

@@ -4,6 +4,7 @@
 #include "OrderBoxWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
 
 void UOrderBoxWidget::NativeConstruct()
 {
@@ -28,6 +29,7 @@ void UOrderBoxWidget::NewBox(int32 ID)
 	Now = KSGameModeBase->GetIngreCount(ID);
 	Min = Now;
 	Price = Ingre->Items[ID].Price;
+	ImageSet();
 	Name->SetText(FText::FromString(Ingre->Items[ID].Name));
 	Value->SetText(FText::AsNumber(Now));
 }
@@ -51,5 +53,16 @@ void UOrderBoxWidget::PressR()
 
 		KSGameModeBase->SetMoney(-Price);
 		KSGameModeBase->SetIngreCount(Num, Now);
+	}
+}
+
+void UOrderBoxWidget::ImageSet()
+{
+	UTexture2D* NewTexture = LoadObject<UTexture2D>(nullptr, TEXT("/Content/MapAsset/UI/ys.uasset"));
+
+	if (Image && NewTexture)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HI"));
+		Image->SetBrushFromTexture(NewTexture);
 	}
 }

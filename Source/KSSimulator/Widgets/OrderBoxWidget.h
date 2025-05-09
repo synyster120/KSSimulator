@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget));
 	class UTextBlock* Name;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UImage* Image;
+
 	AKSGameModeBase* KSGameModeBase;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -45,4 +48,5 @@ public:
 	void PressL();
 	UFUNCTION()
 	void PressR();
+	void ImageSet();
 };
