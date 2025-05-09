@@ -7,6 +7,9 @@
 #include "Ingredient.h"
 #include "Food.h"
 #include "OrderManager.h"
+#include "Customer.h"
+#include "KSPlayer.h"
+#include "PlayerHUD.h"
 #include "KSGameModeBase.generated.h"
 
 /**
@@ -40,17 +43,24 @@ private:
 	FString TimeStr;
 	int32 FoodCount[5];
 	bool IsOpen = false;
+	bool IsTableFull[5];
 
 	FTimerHandle TimerHandle;
 	APlayerController* PC;
+	APlayerHUD* MyHUD;
+	AKSPlayer* MyPawn;
 
 	void UpdateTime();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly) 
 	UFood* Fo;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UIngredient* In;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UCustomerMaker* CustomerMaker;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACustomer> BP_CustomerClass;
 	UPROPERTY()
 	UOrderManager* OrderManager;
 
@@ -67,4 +77,7 @@ public:
 	
 	void SetOpen();
 	bool GetOpen();
+
+	void SetTable(int32 TableNum);
+	bool GetTable(int32 TableNum);
 };

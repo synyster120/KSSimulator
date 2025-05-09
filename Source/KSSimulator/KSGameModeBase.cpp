@@ -3,6 +3,7 @@
 #include "Widgets/OrderingWidget.h"
 #include "Components/TextBlock.h"
 #include "UObject/ConstructorHelpers.h"
+#include "CustomerMaker.h"
 #include "Kismet/GameplayStatics.h"
 
 AKSGameModeBase::AKSGameModeBase()
@@ -18,6 +19,8 @@ AKSGameModeBase::AKSGameModeBase()
 	{
 		OWClass = b.Class;
 	}
+
+	HUDClass = APlayerHUD::StaticClass();
 }
 
 void AKSGameModeBase::BeginPlay()
@@ -27,8 +30,19 @@ void AKSGameModeBase::BeginPlay()
 	PC = UGameplayStatics::GetPlayerController(this, 0);
 	OrderManager = NewObject<UOrderManager>(this);
 	Money = 50000;
+	CustomerMaker = NewObject<UCustomerMaker>(this);
+	CustomerMaker->CustomerClass = BP_CustomerClass;
+	CustomerMaker->GameModeIn(this);
+
+	for (int32 i = 0;i < 5;i++) IsTableFull[i] = false;
 	for (int32 i = 0;i < 5;i++) FoodCount[i] = 10;
 
+
+	AHUD* HUD = PC->GetHUD();
+	MyHUD = Cast<APlayerHUD>(HUD);
+	APawn* Ch = PC->GetPawn();
+	MyPawn = Cast<AKSPlayer>(Ch);
+	MyPawn->SetPlayerHUD(MyHUD);
 	if (MainUIClass != nullptr)
 	{
 		MainUI = CreateWidget<UGameMainWidget>(GetWorld(), MainUIClass);
@@ -45,6 +59,7 @@ void AKSGameModeBase::BeginPlay()
 void AKSGameModeBase::NewDay()
 {
 	Day += 1;
+	MyHUD->IfDraw = true;
 	IsOpen = false;
 
 	if (OW)
@@ -63,12 +78,27 @@ void AKSGameModeBase::NewDay()
 	UpdateTime();
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 10.f, true);
 }
 
 void AKSGameModeBase::SetOpen()
 {
 	IsOpen = !IsOpen;
+}
+
+bool AKSGameModeBase::GetOpen()
+{
+	return IsOpen;
+}
+
+void AKSGameModeBase::SetTable(int32 TableNum)
+{
+	IsTableFull[TableNum] = !IsTableFull[TableNum];
+}
+
+bool AKSGameModeBase::GetTable(int32 TableNum)
+{
+	return IsTableFull[TableNum];
 }
 
 void AKSGameModeBase::UpdateTime()
@@ -77,7 +107,6 @@ void AKSGameModeBase::UpdateTime()
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60) 
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
-	UE_LOG(LogTemp, Warning, TEXT("%d, %s"), Time, *TimeStr);
 	if (MainUI)
 	{
 		MainUI->Time->SetText(FText::FromString(TimeStr));
@@ -136,6 +165,7 @@ void AKSGameModeBase::TimeDilationSet(float T)
 
 void AKSGameModeBase::BeforeEndDay()
 {
+	MyHUD->IfDraw = false;
 	TimeDilationSet(0.f);
 
 	if (PC)

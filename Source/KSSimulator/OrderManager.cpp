@@ -22,6 +22,7 @@ int32 UOrderManager::OrderIn(int32 TableNum, int32 FoodNum)
         GameMainWidget->OrderListBox->AddChildToVerticalBox(NewText);
         OrderTextBlocks.Add(NewText);
     }
+
     return ReturnOrderNum;
 }
 
