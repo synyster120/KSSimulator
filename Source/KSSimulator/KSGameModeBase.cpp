@@ -3,6 +3,7 @@
 #include "Widgets/OrderingWidget.h"
 #include "Components/TextBlock.h"
 #include "UObject/ConstructorHelpers.h"
+#include "FadeInOutWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 AKSGameModeBase::AKSGameModeBase()
@@ -17,6 +18,12 @@ AKSGameModeBase::AKSGameModeBase()
 	if (b.Succeeded())
 	{
 		OWClass = b.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UFadeInOutWidget> c(TEXT("/Game/Widgets/BP_FadeInOutWidget.BP_FadeInOutWidget_C"));
+	if (c.Succeeded())
+	{
+		FIOClass = c.Class;
 	}
 }
 
@@ -40,6 +47,8 @@ void AKSGameModeBase::BeginPlay()
 			NewDay();
 		}
 	}
+	if (OWClass != nullptr) OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
+	if (FIOClass != nullptr) FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 }
 
 void AKSGameModeBase::NewDay()
@@ -56,6 +65,11 @@ void AKSGameModeBase::NewDay()
 	{
 		OW->RemoveFromViewport();
 	}
+	if (FIO)
+	{
+		FIO->AddToViewport();
+		FIO->FadeIn();
+	}
 	if (PC)
 	{
 		PC->bShowMouseCursor = false;
@@ -68,7 +82,17 @@ void AKSGameModeBase::NewDay()
 	UpdateTime();
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);
+	GetWorldTimerManager().ClearTimer(FadeHandle);
+	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);//10.f, true);
+}
+
+void AKSGameModeBase::FadeInFin()
+{
+	if (FIO)
+	{
+		FIO->RemoveFromViewport();
+	}
 }
 
 void AKSGameModeBase::SetOpen()
@@ -156,6 +180,18 @@ void AKSGameModeBase::TimeDilationSet(float T)
 
 void AKSGameModeBase::BeforeEndDay()
 {
+	if (FIO)
+	{
+		FIO->AddToViewport();
+		FIO->FadeOut();
+	}
+
+	GetWorldTimerManager().ClearTimer(FadeHandle);
+	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::EndDay, 2.5f, true);
+}
+
+void AKSGameModeBase::EndDay()
+{
 	TimeDilationSet(0.f);
 
 	if (PC)
@@ -164,15 +200,11 @@ void AKSGameModeBase::BeforeEndDay()
 		PC->SetInputMode(FInputModeUIOnly());
 	}
 
-	if (OWClass != nullptr)
+	if (OW) OW->AddToViewport();
+	if (MainUI)
 	{
-		OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
-		if (OW) OW->AddToViewport();
-		if (MainUI)
-		{
-			MainUI->RemoveFromViewport();
-			MainUI->AddToViewport();
-			MainUI->Time->SetText(FText::FromString(""));
-		}
+		MainUI->RemoveFromViewport();
+		MainUI->AddToViewport();
+		MainUI->Time->SetText(FText::FromString(""));
 	}
 }

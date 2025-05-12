@@ -30,6 +30,9 @@ protected:
 	TSubclassOf<class UOrderingWidget> OWClass;
 	class UOrderingWidget* OW;
 
+	TSubclassOf<class UFadeInOutWidget> FIOClass;
+	class UFadeInOutWidget* FIO;
+
 private:
 	int32 Money;
 	int32 WorldTime = 0;
@@ -43,6 +46,7 @@ private:
 	bool IsOpen = false;
 
 	FTimerHandle TimerHandle;
+	FTimerHandle FadeHandle;
 	APlayerController* PC;
 
 	void UpdateTime();
@@ -73,7 +77,9 @@ public:
 
 	void TimeDilationSet(float T);
 	void BeforeEndDay();
+	void EndDay();
 	void NewDay();
+	void FadeInFin();
 
 	UFUNCTION(BlueprintCallable)
 	void SetOpen();
