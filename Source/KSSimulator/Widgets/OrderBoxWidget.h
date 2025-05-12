@@ -48,5 +48,5 @@ public:
 	void PressL();
 	UFUNCTION()
 	void PressR();
-	void ImageSet();
+	void ImageSet(int32 N);
 };

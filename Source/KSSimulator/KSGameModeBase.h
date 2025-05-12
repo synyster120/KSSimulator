@@ -46,6 +46,7 @@ private:
 	bool IsOpen = false;
 
 	FTimerHandle TimerHandle;
+	FTimerHandle FadeHandle;
 	APlayerController* PC;
 
 	void UpdateTime();

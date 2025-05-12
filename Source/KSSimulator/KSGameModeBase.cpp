@@ -47,6 +47,8 @@ void AKSGameModeBase::BeginPlay()
 			NewDay();
 		}
 	}
+	if (OWClass != nullptr) OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
+	if (FIOClass != nullptr) FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 }
 
 void AKSGameModeBase::NewDay()
@@ -63,14 +65,10 @@ void AKSGameModeBase::NewDay()
 	{
 		OW->RemoveFromViewport();
 	}
-	if (FIOClass != nullptr)
+	if (FIO)
 	{
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
-		if (FIO)
-		{
-			FIO->AddToViewport();
-			FIO->FadeIn();
-		}
+		FIO->AddToViewport();
+		FIO->FadeIn();
 	}
 	if (PC)
 	{
@@ -84,19 +82,16 @@ void AKSGameModeBase::NewDay()
 	UpdateTime();
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, true);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);
+	GetWorldTimerManager().ClearTimer(FadeHandle);
+	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);//10.f, true);
 }
 
 void AKSGameModeBase::FadeInFin()
 {
-	if (FIOClass != nullptr)
+	if (FIO)
 	{
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
-		if (FIO)
-		{
-			FIO->RemoveFromViewport();
-		}
+		FIO->RemoveFromViewport();
 	}
 }
 
@@ -131,7 +126,7 @@ void AKSGameModeBase::UpdateTime()
 	{
 		MainUI->Time->SetText(FText::FromString(TimeStr));
 	}
-	if (Time == 550)
+	if (Time == 1080)
 	{
 		BeforeEndDay();
 	}
@@ -185,18 +180,14 @@ void AKSGameModeBase::TimeDilationSet(float T)
 
 void AKSGameModeBase::BeforeEndDay()
 {
-	if (FIOClass != nullptr)
+	if (FIO)
 	{
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
-		if (FIO)
-		{
-			FIO->AddToViewport();
-			FIO->FadeOut();
-		}
+		FIO->AddToViewport();
+		FIO->FadeOut();
 	}
 
-	GetWorldTimerManager().ClearTimer(TimerHandle);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::EndDay, 2.5f, true);
+	GetWorldTimerManager().ClearTimer(FadeHandle);
+	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::EndDay, 2.5f, true);
 }
 
 void AKSGameModeBase::EndDay()
@@ -209,23 +200,11 @@ void AKSGameModeBase::EndDay()
 		PC->SetInputMode(FInputModeUIOnly());
 	}
 
-	if (OWClass != nullptr)
+	if (OW) OW->AddToViewport();
+	if (MainUI)
 	{
-		OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
-		if (OW) OW->AddToViewport();
-		if (MainUI)
-		{
-			MainUI->RemoveFromViewport();
-			MainUI->AddToViewport();
-			MainUI->Time->SetText(FText::FromString(""));
-		}
-	}
-	if (FIOClass != nullptr)
-	{
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
-		if (FIO)
-		{
-			FIO->RemoveFromViewport();
-		}
+		MainUI->RemoveFromViewport();
+		MainUI->AddToViewport();
+		MainUI->Time->SetText(FText::FromString(""));
 	}
 }
