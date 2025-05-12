@@ -4,6 +4,7 @@
 #include "Components/TextBlock.h"
 #include "UObject/ConstructorHelpers.h"
 #include "FadeInOutWidget.h"
+#include "FoodCountActor.h"
 #include "Kismet/GameplayStatics.h"
 
 AKSGameModeBase::AKSGameModeBase()
@@ -34,8 +35,11 @@ void AKSGameModeBase::BeginPlay()
 	PC = UGameplayStatics::GetPlayerController(this, 0);
 	OrderManager = NewObject<UOrderManager>(this);
 	Money = 50000;
-	for (int32 i = 0;i < 5;i++) FoodCount[i] = 10;
+	for (int32 i = 0;i < 4;i++) FoodCount[i] = 10;
 
+
+	FoodCountActor = GetWorld()->SpawnActor<AFoodCountActor>(FoodCountActorClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator);
+	FoodCountActor->SetActorLocation(FVector(0.f, 0.f, 0.f));
 	if (MainUIClass != nullptr)
 	{
 		MainUI = CreateWidget<UGameMainWidget>(GetWorld(), MainUIClass);
@@ -47,6 +51,7 @@ void AKSGameModeBase::BeginPlay()
 			NewDay();
 		}
 	}
+	
 	if (OWClass != nullptr) OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
 	if (FIOClass != nullptr) FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 }
@@ -63,7 +68,7 @@ void AKSGameModeBase::NewDay()
 
 	if (OW)
 	{
-		OW->RemoveFromViewport();
+		OW->RemoveFromParent();
 	}
 	if (FIO)
 	{
@@ -91,7 +96,7 @@ void AKSGameModeBase::FadeInFin()
 {
 	if (FIO)
 	{
-		FIO->RemoveFromViewport();
+		FIO->RemoveFromParent();
 	}
 }
 
@@ -121,7 +126,6 @@ void AKSGameModeBase::UpdateTime()
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60) 
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
-	UE_LOG(LogTemp, Warning, TEXT("%d, %s"), Time, *TimeStr);
 	if (MainUI)
 	{
 		MainUI->Time->SetText(FText::FromString(TimeStr));
@@ -165,7 +169,12 @@ float AKSGameModeBase::GetRating()
 
 void AKSGameModeBase::SetIngreCount(int32 Index, int32 Value)
 {
-	FoodCount[Index] = Value;
+	FoodCount[Index] += Value;
+
+	if (FoodCountActor)
+	{
+		FoodCountActor->SetFoodCount(Index, FoodCount[Index]);
+	}
 }
 
 int32 AKSGameModeBase::GetIngreCount(int32 Index)
@@ -203,7 +212,7 @@ void AKSGameModeBase::EndDay()
 	if (OW) OW->AddToViewport();
 	if (MainUI)
 	{
-		MainUI->RemoveFromViewport();
+		MainUI->RemoveFromParent();
 		MainUI->AddToViewport();
 		MainUI->Time->SetText(FText::FromString(""));
 	}

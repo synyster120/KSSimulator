@@ -32,6 +32,10 @@ void UOrderBoxWidget::NewBox(int32 ID)
 	ImageSet(ID);
 	Name->SetText(FText::FromString(Ingre->Items[ID].Name));
 	Value->SetText(FText::AsNumber(Now));
+	if (Now == Min)
+	{
+		Minus->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void UOrderBoxWidget::PressL()
@@ -40,19 +44,28 @@ void UOrderBoxWidget::PressL()
 		Now--;
 		Value->SetText(FText::AsNumber(Now));
 		KSGameModeBase->SetMoney(Price);
-		KSGameModeBase->SetIngreCount(Num, Now);
+		KSGameModeBase->SetIngreCount(Num, -1);
+		if (Now == Min)
+		{
+			Minus->SetVisibility(ESlateVisibility::Hidden);
+
+		}
 	}
 }
 
 void UOrderBoxWidget::PressR()
 {
+	if (Now == Min)
+	{
+		Minus->SetVisibility(ESlateVisibility::Visible);
+	}
 	if (KSGameModeBase->GetMoney()>=500)
 	{
 		Now++;
 		Value->SetText(FText::AsNumber(Now));
 
 		KSGameModeBase->SetMoney(-Price);
-		KSGameModeBase->SetIngreCount(Num, Now);
+		KSGameModeBase->SetIngreCount(Num, 1);
 	}
 }
 

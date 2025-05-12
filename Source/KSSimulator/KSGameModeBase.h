@@ -7,6 +7,7 @@
 #include "Ingredient.h"
 #include "Food.h"
 #include "OrderManager.h"
+#include "FoodCountWidget.h"
 #include "KSGameModeBase.generated.h"
 
 /**
@@ -33,6 +34,10 @@ protected:
 	TSubclassOf<class UFadeInOutWidget> FIOClass;
 	class UFadeInOutWidget* FIO;
 
+	class AFoodCountActor* FoodCountActor;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AFoodCountActor> FoodCountActorClass;
+
 private:
 	int32 Money;
 	int32 WorldTime = 0;
@@ -56,6 +61,8 @@ public:
 	UFood* Fo;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UIngredient* In;
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<class UFoodCountWidget> FoodCountWidgetClass;
 	UPROPERTY()
 	UOrderManager* OrderManager;
 
