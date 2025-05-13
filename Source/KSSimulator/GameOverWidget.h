@@ -43,7 +43,19 @@ public:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* BeforeNewSceneAnimation;
 
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* GameClearAnimation;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* BeforeNewSceneAnimation2;
+
+	UPROPERTY(EditAnywhere)
+	class USoundBase* GameClearSound;
+
+	bool IsClear = false;
+
 	void FadeOut();
+	void GameClear();
 
 	AKSGameModeBase* KSGameModeBase;
 

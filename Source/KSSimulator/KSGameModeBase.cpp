@@ -161,6 +161,16 @@ void AKSGameModeBase::SetMoney(int32 M)
 		MainUI->MoneyValue->SetText(FText::AsNumber(Money));
 	}
 	if (M > 0) UGameplayStatics::PlaySound2D(GetWorld(), MoneySound);
+	if (Money > 200000)
+	{
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->SetInputMode(FInputModeUIOnly());
+		}
+		TimeDilationSet(0.f);
+		GameClear();
+	}
 }
 
 int32 AKSGameModeBase::GetMoney()
@@ -258,6 +268,16 @@ void AKSGameModeBase::GameOver()
 	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
 	GO->AddToViewport();
 	GO->FadeOut();
+}
+
+void AKSGameModeBase::GameClear()
+{
+	if (MainUI) MainUI->RemoveFromParent();
+	if (OW) OW->RemoveFromParent();
+	if (FIO) FIO->RemoveFromParent();
+	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
+	GO->AddToViewport();
+	GO->GameClear();
 }
 
 void AKSGameModeBase::Restart()

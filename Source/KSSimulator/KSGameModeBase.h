@@ -109,6 +109,7 @@ public:
 	bool GetTable(int TableNum);
 
 	void GameOver();
+	void GameClear();
 	void Restart();
 	void End();
 };

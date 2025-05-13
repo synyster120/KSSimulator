@@ -12,6 +12,16 @@ void UGameOverWidget::FadeOut()
 	PlayAnimation(GameOverAnimation);
 }
 
+void UGameOverWidget::GameClear()
+{
+	IsClear = true;
+	UGameplayStatics::PlaySound2D(GetWorld(), GameClearSound);
+	GameOverText1->SetText(FText::FromString("Game Clear"));
+	GameOverText2->SetText(FText::FromString("Congratulations"));
+
+	PlayAnimation(GameClearAnimation);
+}
+
 void UGameOverWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -30,7 +40,8 @@ void UGameOverWidget::NativeConstruct()
 
 void UGameOverWidget::Restart()
 {
-	PlayAnimation(BeforeNewSceneAnimation);
+	if (IsClear) PlayAnimation(BeforeNewSceneAnimation2);
+	else PlayAnimation(BeforeNewSceneAnimation);
 	RestartB->SetIsEnabled(false);
 	EndB->SetIsEnabled(false);
 
@@ -39,7 +50,8 @@ void UGameOverWidget::Restart()
 
 void UGameOverWidget::End()
 {
-	PlayAnimation(BeforeNewSceneAnimation);
+	if (IsClear) PlayAnimation(BeforeNewSceneAnimation2);
+	else PlayAnimation(BeforeNewSceneAnimation);
 	RestartB->SetIsEnabled(false);
 	EndB->SetIsEnabled(false);
 
