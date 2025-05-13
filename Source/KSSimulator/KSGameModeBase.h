@@ -78,8 +78,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetRating();
 
+	UFUNCTION(BlueprintCallable)
 	void SetIngreCount(int32 Index, int32 Value);
 
+	UFUNCTION(BlueprintCallable)
 	int32 GetIngreCount(int32 Index);
 
 	void TimeDilationSet(float T);
