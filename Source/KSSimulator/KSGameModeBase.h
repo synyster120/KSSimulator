@@ -26,13 +26,13 @@ protected:
 
 protected:
 	TSubclassOf<class UGameMainWidget> MainUIClass;
-	class UGameMainWidget* MainUI;
+	class UGameMainWidget* MainUI = nullptr;
 
 	TSubclassOf<class UOrderingWidget> OWClass;
-	class UOrderingWidget* OW;
+	class UOrderingWidget* OW = nullptr;
 
 	TSubclassOf<class UFadeInOutWidget> FIOClass;
-	class UFadeInOutWidget* FIO;
+	class UFadeInOutWidget* FIO = nullptr;
 
 	class AFoodCountActor* FoodCountActor;
 	UPROPERTY(EditAnywhere)

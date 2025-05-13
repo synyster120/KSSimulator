@@ -33,13 +33,13 @@ void AFoodCountActor::BeginPlay()
         switch (i)
         {
         case 0:
-            WidgetComp->SetRelativeLocation(FVector(-180.f, -1285.f, 500.f)); break;
+            WidgetComp->SetRelativeLocation(FVector(555.f, -1285.f, 600.f)); break;
         case 1:
             WidgetComp->SetRelativeLocation(FVector(-80.f, -1285.f, 500.f)); break;
         case 2:
             WidgetComp->SetRelativeLocation(FVector(20.f, -1285.f, 500.f)); break;
         case 3:
-            WidgetComp->SetRelativeLocation(FVector(555.f, -1285.f, 600.f)); break;
+            WidgetComp->SetRelativeLocation(FVector(-180.f, -1285.f, 500.f)); break;
         }
         WidgetComp->SetVisibility(true);
 
@@ -59,13 +59,13 @@ void AFoodCountActor::BeginPlay()
             switch (i)
             {
             case 0:
-                FoodCountWidgets[i]->FoodName->SetText(FText::FromString("SooYuk")); break;
+                FoodCountWidgets[i]->FoodName->SetText(FText::FromString("YukSoo")); break;
             case 1:
                 FoodCountWidgets[i]->FoodName->SetText(FText::FromString("BooChoo")); break;
             case 2:
                 FoodCountWidgets[i]->FoodName->SetText(FText::FromString("DaDaeGi")); break;
             case 3:
-                FoodCountWidgets[i]->FoodName->SetText(FText::FromString("YukSoo")); break;
+                FoodCountWidgets[i]->FoodName->SetText(FText::FromString("SooYuk")); break;
             }
         }
     }

@@ -51,9 +51,6 @@ void AKSGameModeBase::BeginPlay()
 			NewDay();
 		}
 	}
-	
-	if (OWClass != nullptr) OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
-	if (FIOClass != nullptr) FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 }
 
 void AKSGameModeBase::NewDay()
@@ -72,6 +69,11 @@ void AKSGameModeBase::NewDay()
 	}
 	if (FIO)
 	{
+		FIO->FadeIn();
+	}
+	else
+	{
+		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 		FIO->AddToViewport();
 		FIO->FadeIn();
 	}
@@ -97,6 +99,7 @@ void AKSGameModeBase::FadeInFin()
 	if (FIO)
 	{
 		FIO->RemoveFromParent();
+		FIO = nullptr;
 	}
 }
 
@@ -189,8 +192,9 @@ void AKSGameModeBase::TimeDilationSet(float T)
 
 void AKSGameModeBase::BeforeEndDay()
 {
-	if (FIO)
+	if (FIOClass)
 	{
+		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 		FIO->AddToViewport();
 		FIO->FadeOut();
 	}
@@ -209,10 +213,16 @@ void AKSGameModeBase::EndDay()
 		PC->SetInputMode(FInputModeUIOnly());
 	}
 
-	if (OW) OW->AddToViewport();
+	if (OWClass != nullptr)
+	{
+		OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
+		OW->AddToViewport();
+	}
 	if (MainUI)
 	{
 		MainUI->RemoveFromParent();
+		MainUI = nullptr;
+		MainUI = CreateWidget<UGameMainWidget>(GetWorld(), MainUIClass);
 		MainUI->AddToViewport();
 		MainUI->Time->SetText(FText::FromString(""));
 	}
