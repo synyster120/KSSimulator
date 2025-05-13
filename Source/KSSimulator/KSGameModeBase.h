@@ -65,6 +65,9 @@ public:
 	TSubclassOf<class UFoodCountWidget> FoodCountWidgetClass;
 	UPROPERTY()
 	UOrderManager* OrderManager;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* MoneySound;
+	
 
 	UFUNCTION(BlueprintCallable)
 	void SetMoney(int32 M);

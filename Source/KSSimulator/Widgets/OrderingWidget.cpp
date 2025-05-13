@@ -2,6 +2,7 @@
 
 
 #include "OrderingWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 void UOrderingWidget::NativeConstruct()
 {
@@ -37,5 +38,11 @@ void UOrderingWidget::Refresh()
 
 void UOrderingWidget::NextDay()
 {
+    ClickSoundPlayer();
     KSGameModeBase->NewDay();
+}
+
+void UOrderingWidget::ClickSoundPlayer()
+{
+    UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
 }

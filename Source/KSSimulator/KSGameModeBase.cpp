@@ -147,6 +147,7 @@ void AKSGameModeBase::SetMoney(int32 M)
 	{
 		MainUI->MoneyValue->SetText(FText::AsNumber(Money));
 	}
+	if (M > 0) UGameplayStatics::PlaySound2D(GetWorld(), MoneySound);
 }
 
 int32 AKSGameModeBase::GetMoney()

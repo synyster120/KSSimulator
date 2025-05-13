@@ -29,6 +29,8 @@
 		void Refresh();
 		UFUNCTION()
 		void NextDay();
+		UPROPERTY(EditAnywhere)
+		class USoundBase* ClickSound;
 
 	protected:
 		UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -39,4 +41,6 @@
 		UOrderBoxWidget* Box[5];
 
 		AKSGameModeBase* KSGameModeBase;
+
+		void ClickSoundPlayer();
 	};

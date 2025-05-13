@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
 
 void UOrderBoxWidget::NativeConstruct()
 {
@@ -51,6 +52,7 @@ void UOrderBoxWidget::PressL()
 
 		}
 	}
+	ClickSoundPlayer();
 }
 
 void UOrderBoxWidget::PressR()
@@ -67,6 +69,7 @@ void UOrderBoxWidget::PressR()
 		KSGameModeBase->SetMoney(-Price);
 		KSGameModeBase->SetIngreCount(Num, 1);
 	}
+	ClickSoundPlayer();
 }
 
 void UOrderBoxWidget::ImageSet(int32 N)
@@ -86,4 +89,9 @@ void UOrderBoxWidget::ImageSet(int32 N)
 	{
 		Image->SetBrushFromTexture(NewTexture);
 	}
+}
+
+void UOrderBoxWidget::ClickSoundPlayer()
+{
+	UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
 }

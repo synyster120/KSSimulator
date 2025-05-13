@@ -31,6 +31,8 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UImage* Image;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* ClickSound;
 
 	AKSGameModeBase* KSGameModeBase;
 
@@ -49,4 +51,5 @@ public:
 	UFUNCTION()
 	void PressR();
 	void ImageSet(int32 N);
+	void ClickSoundPlayer();
 };
