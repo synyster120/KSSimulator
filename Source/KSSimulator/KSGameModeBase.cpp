@@ -220,9 +220,6 @@ void AKSGameModeBase::EndDay()
 	}
 	if (MainUI)
 	{
-		MainUI->RemoveFromParent();
-		MainUI = nullptr;
-		MainUI = CreateWidget<UGameMainWidget>(GetWorld(), MainUIClass);
 		MainUI->AddToViewport();
 		MainUI->Time->SetText(FText::FromString(""));
 	}
