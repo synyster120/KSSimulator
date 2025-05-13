@@ -5,7 +5,13 @@
 #include "UObject/ConstructorHelpers.h"
 #include "FadeInOutWidget.h"
 #include "FoodCountActor.h"
+#include "GameOverWidget.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "HAL/PlatformTime.h"
+#include "Misc/DateTime.h"
+#include "Tickable.h"
+#include "Containers/Ticker.h"
 
 AKSGameModeBase::AKSGameModeBase()
 {
@@ -25,6 +31,12 @@ AKSGameModeBase::AKSGameModeBase()
 	if (c.Succeeded())
 	{
 		FIOClass = c.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UGameOverWidget> d(TEXT("/Game/Widgets/BP_GameOverWidget.BP_GameOverWidget_C"));
+	if (d.Succeeded())
+	{
+		GOClass = d.Class;
 	}
 }
 
@@ -56,6 +68,7 @@ void AKSGameModeBase::BeginPlay()
 void AKSGameModeBase::NewDay()
 {
 	Day += 1;
+	MainUI->DayText->SetText(FText::FromString(FString::Printf(TEXT("Day %d"), Day)));
 	IsOpen = false;
 
 	for (int32 i = 0; i < 5;i++)
@@ -90,7 +103,7 @@ void AKSGameModeBase::NewDay()
 	
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	GetWorldTimerManager().ClearTimer(FadeHandle);
-	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, true);
+	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, false);
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);//10.f, true);
 }
 
@@ -148,6 +161,16 @@ void AKSGameModeBase::SetMoney(int32 M)
 		MainUI->MoneyValue->SetText(FText::AsNumber(Money));
 	}
 	if (M > 0) UGameplayStatics::PlaySound2D(GetWorld(), MoneySound);
+	if (Money > 200000)
+	{
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->SetInputMode(FInputModeUIOnly());
+		}
+		TimeDilationSet(0.f);
+		GameClear();
+	}
 }
 
 int32 AKSGameModeBase::GetMoney()
@@ -163,6 +186,16 @@ void AKSGameModeBase::SetRating(float R)
 	if (MainUI)
 	{
 		MainUI->RatingValue->SetText(FText::AsNumber(Rating));
+	}
+	if (Rating < 3.f)
+	{
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->SetInputMode(FInputModeUIOnly());
+		}
+		TimeDilationSet(0.f);
+		GameOver();
 	}
 }
 
@@ -201,7 +234,7 @@ void AKSGameModeBase::BeforeEndDay()
 	}
 
 	GetWorldTimerManager().ClearTimer(FadeHandle);
-	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::EndDay, 2.5f, true);
+	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::EndDay, 2.5f, false);
 }
 
 void AKSGameModeBase::EndDay()
@@ -223,5 +256,51 @@ void AKSGameModeBase::EndDay()
 	{
 		MainUI->AddToViewport();
 		MainUI->Time->SetText(FText::FromString(""));
+		MainUI->DayText->SetText(FText::FromString(""));
 	}
+}
+
+void AKSGameModeBase::GameOver()
+{
+	if (MainUI) MainUI->RemoveFromParent();
+	if (OW) OW->RemoveFromParent();
+	if (FIO) FIO->RemoveFromParent();
+	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
+	GO->AddToViewport();
+	GO->FadeOut();
+}
+
+void AKSGameModeBase::GameClear()
+{
+	if (MainUI) MainUI->RemoveFromParent();
+	if (OW) OW->RemoveFromParent();
+	if (FIO) FIO->RemoveFromParent();
+	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
+	GO->AddToViewport();
+	GO->GameClear();
+}
+
+void AKSGameModeBase::Restart()
+{
+	FTSTicker::GetCoreTicker().AddTicker(
+		FTickerDelegate::CreateLambda([this](float DeltaTime)
+			{
+				FName CurrentLevel = *UGameplayStatics::GetCurrentLevelName(this, true);
+				UGameplayStatics::OpenLevel(this, CurrentLevel);
+				return false;
+			}),
+		1.0f
+	);
+}
+
+void AKSGameModeBase::End()
+{
+	FTSTicker::GetCoreTicker().AddTicker(
+		FTickerDelegate::CreateLambda([this](float DeltaTime)
+			{
+				UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
+				return false;
+			}),
+		1.0f
+	);
 }

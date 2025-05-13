@@ -34,6 +34,9 @@ protected:
 	TSubclassOf<class UFadeInOutWidget> FIOClass;
 	class UFadeInOutWidget* FIO = nullptr;
 
+	TSubclassOf<class UGameOverWidget> GOClass;
+	class UGameOverWidget* GO = nullptr;
+
 	class AFoodCountActor* FoodCountActor;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AFoodCountActor> FoodCountActorClass;
@@ -104,4 +107,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool GetTable(int TableNum);
+
+	void GameOver();
+	void GameClear();
+	void Restart();
+	void End();
 };
