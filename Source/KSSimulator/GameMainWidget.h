@@ -28,5 +28,8 @@ public:
 	class UTextBlock* OrderText;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget));
+	class UTextBlock* DayText;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget));
 	class UVerticalBox* OrderListBox;
 };

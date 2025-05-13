@@ -22,6 +22,7 @@ public:
 	void FadeOut();
 
 protected:
+
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* FadeInAnimation;
 
