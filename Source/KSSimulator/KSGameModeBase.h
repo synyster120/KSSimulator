@@ -66,7 +66,7 @@ public:
 	UIngredient* In;
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<class UFoodCountWidget> FoodCountWidgetClass;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	UOrderManager* OrderManager;
 	UPROPERTY(EditAnywhere)
 	class USoundBase* MoneySound;
@@ -74,7 +74,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetMoney(int32 M);
-
+	
 	UFUNCTION(BlueprintCallable)
 	int32 GetMoney();
 

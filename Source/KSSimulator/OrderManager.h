@@ -21,7 +21,7 @@ struct FOrderInfo {
 	int32 FoodNum;
 };
 
-UCLASS()
+UCLASS(Blueprintable,BlueprintType)
 class KSSIMULATOR_API UOrderManager : public UObject
 {
 	GENERATED_BODY()
@@ -43,7 +43,12 @@ public:
 
 	void SetWidget(UGameMainWidget* InWidget);
 	void NewDay();
+
+	UFUNCTION(BlueprintCallable)
 	int32 OrderIn(int32 TableNum, int32 FoodNum);
+
+	UFUNCTION(BlueprintCallable)
 	void OrderOut(int32 OrderNum);
+
 	void EndDay();
 };
