@@ -7,6 +7,8 @@
 #include "FoodCountActor.h"
 #include "GameOverWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h"
+#include "GameFramework/Character.h"
 
 #include "HAL/PlatformTime.h"
 #include "Misc/DateTime.h"
@@ -71,6 +73,22 @@ void AKSGameModeBase::NewDay()
 	MainUI->DayText->SetText(FText::FromString(FString::Printf(TEXT("Day %d"), Day)));
 	IsOpen = false;
 
+	UClass* BPClass = LoadClass<AActor>(nullptr, TEXT("/Game/Blueprints/BP_KSSPlayer.BP_KSSPlayer_C"));
+	if (!BPClass) return;
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), BPClass, FoundActors);
+
+	if (FoundActors.Num() > 0)
+	{
+		AActor* BPInstance = FoundActors[0];
+		APawn* Pawn = Cast<APawn>(BPInstance);
+		AController* Controller = Pawn->GetController();
+
+		Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));
+		BPInstance->SetActorRelativeLocation(FVector(1040.f, -1630.f, 448.f));
+	}
+
 	for (int32 i = 0; i < 5;i++)
 	{
 		IsTableFull[i] = false;
@@ -100,7 +118,7 @@ void AKSGameModeBase::NewDay()
 	Time = 500;
 	SetMoney(0);
 	UpdateTime();
-	
+
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	GetWorldTimerManager().ClearTimer(FadeHandle);
 	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, false);
@@ -140,7 +158,7 @@ void AKSGameModeBase::UpdateTime()
 {
 	Time += 10;
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
-		+ ":" + FString::Printf(TEXT("%02d"), Time % 60) 
+		+ ":" + FString::Printf(TEXT("%02d"), Time % 60)
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
 	if (MainUI)
 	{
@@ -240,6 +258,18 @@ void AKSGameModeBase::BeforeEndDay()
 void AKSGameModeBase::EndDay()
 {
 	TimeDilationSet(0.f);
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	for (TActorIterator<AActor> It(World); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (Actor->Tags.Contains("DBP"))
+		{
+			Actor->Destroy();
+		}
+	}
 
 	if (PC)
 	{
