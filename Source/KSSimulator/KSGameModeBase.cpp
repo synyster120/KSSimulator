@@ -156,7 +156,7 @@ bool AKSGameModeBase::GetTable(int TableNum)
 
 void AKSGameModeBase::UpdateTime()
 {
-	Time += 10;
+	Time += 1;
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60)
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
