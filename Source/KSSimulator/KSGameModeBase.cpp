@@ -85,8 +85,8 @@ void AKSGameModeBase::NewDay()
 		APawn* Pawn = Cast<APawn>(BPInstance);
 		AController* Controller = Pawn->GetController();
 
-		Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));
-		BPInstance->SetActorRelativeLocation(FVector(1040.f, -1630.f, 448.f));
+		/*Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));*/
+		/*BPInstance->SetActorLocation(FVector(1040.f, -1630.f, 448.f), true);*/
 	}
 
 	for (int32 i = 0; i < 5;i++)
