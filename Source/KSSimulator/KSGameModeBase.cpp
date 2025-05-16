@@ -122,7 +122,7 @@ void AKSGameModeBase::NewDay()
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	GetWorldTimerManager().ClearTimer(FadeHandle);
 	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, false);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);//10.f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 5.f, true);
 }
 
 void AKSGameModeBase::FadeInFin()
@@ -156,7 +156,8 @@ bool AKSGameModeBase::GetTable(int TableNum)
 
 void AKSGameModeBase::UpdateTime()
 {
-	Time += 1;
+	SetRating(-0.5f);
+	Time += 5;
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60)
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
