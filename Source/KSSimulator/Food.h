@@ -11,13 +11,13 @@ struct FFoodInfo {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	int32 FoodID;
+	int32 FoodID = -1;
 
 	UPROPERTY(EditAnywhere)
-	FString Name;
+	FString Name = "";
 
 	UPROPERTY(EditAnywhere)
-	int32 Price;
+	int32 Price = -1;
 
 	UPROPERTY(EditAnywhere)
 	TArray<int32> Ingredients;
