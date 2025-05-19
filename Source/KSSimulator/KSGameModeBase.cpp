@@ -145,7 +145,6 @@ void AKSGameModeBase::FadeInFin()
 	if (FIO)
 	{
 		FIO->RemoveFromParent();
-		FIO = nullptr;
 	}
 }
 
@@ -265,7 +264,6 @@ void AKSGameModeBase::BeforeEndDay()
 {
 	if (FIOClass)
 	{
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 		FIO->AddToViewport(4);
 		FIO->FadeOut();
 	}
