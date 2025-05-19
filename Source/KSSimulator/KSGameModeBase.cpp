@@ -91,7 +91,6 @@ void AKSGameModeBase::NewDay()
 		APawn* Pawn = Cast<APawn>(BPInstance);
 		AController* Controller = Pawn->GetController();
 
-		UE_LOG(LogTemp, Warning, TEXT("HH"));
 		Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));
 		BPInstance->SetActorLocation(FVector(1040.f, -1630.f, 448.f), true);
 	}
@@ -137,7 +136,7 @@ void AKSGameModeBase::NewDay()
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	GetWorldTimerManager().ClearTimer(FadeHandle);
 	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, false);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 3.f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 4.f, true);
 }
 
 void AKSGameModeBase::FadeInFin()
@@ -171,7 +170,7 @@ bool AKSGameModeBase::GetTable(int TableNum)
 
 void AKSGameModeBase::UpdateTime()
 {
-	Time += 5;
+	Time += 10;
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60)
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
