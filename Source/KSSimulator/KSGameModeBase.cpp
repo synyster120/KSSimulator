@@ -187,22 +187,24 @@ void AKSGameModeBase::UpdateTime()
 
 void AKSGameModeBase::SetMoney(int32 M)
 {
-	Money += M;
+	if (IsAlive) {
+		Money += M;
 
-	if (MainUI)
-	{
-		MainUI->MoneyValue->SetText(FText::AsNumber(Money));
-	}
-	if (M > 0) UGameplayStatics::PlaySound2D(GetWorld(), MoneySound);
-	if (Money > 200000)
-	{
-		if (PC)
+		if (MainUI)
 		{
-			PC->bShowMouseCursor = true;
-			PC->SetInputMode(FInputModeUIOnly());
+			MainUI->MoneyValue->SetText(FText::AsNumber(Money));
 		}
-		TimeDilationSet(0.f);
-		GameClear();
+		if (M > 0) UGameplayStatics::PlaySound2D(GetWorld(), MoneySound);
+		if (Money > 200000)
+		{
+			if (PC)
+			{
+				PC->bShowMouseCursor = true;
+				PC->SetInputMode(FInputModeUIOnly());
+			}
+			TimeDilationSet(0.f);
+			GameClear();
+		}
 	}
 }
 
@@ -213,22 +215,24 @@ int32 AKSGameModeBase::GetMoney()
 
 void AKSGameModeBase::SetRating(float R)
 {
-	Rating += R;
-	if (Rating < 0) Rating = 0;
-	else if (Rating > 5) Rating = 5.0f;
-	if (MainUI)
-	{
-		MainUI->RatingValue->SetText(FText::AsNumber(Rating));
-	}
-	if (Rating < 3.f)
-	{
-		if (PC)
+	if (IsAlive) {
+		Rating += R;
+		if (Rating < 0) Rating = 0;
+		else if (Rating > 5) Rating = 5.0f;
+		if (MainUI)
 		{
-			PC->bShowMouseCursor = true;
-			PC->SetInputMode(FInputModeUIOnly());
+			MainUI->RatingValue->SetText(FText::AsNumber(Rating));
 		}
-		TimeDilationSet(0.f);
-		GameOver();
+		if (Rating < 3.f)
+		{
+			if (PC)
+			{
+				PC->bShowMouseCursor = true;
+				PC->SetInputMode(FInputModeUIOnly());
+			}
+			TimeDilationSet(0.f);
+			GameOver();
+		}
 	}
 }
 
@@ -321,7 +325,7 @@ void AKSGameModeBase::EndDay()
 		MainUI->DayText->SetText(FText::FromString(""));
 		MainUI->OrderText->SetText(FText::FromString(""));
 	}
-	if (FIO)
+	if (FIO != nullptr)
 	{
 		FIO->RemoveFromParent();
 		FIO->AddToViewport(1);
@@ -330,9 +334,10 @@ void AKSGameModeBase::EndDay()
 
 void AKSGameModeBase::GameOver()
 {
+	IsAlive = false;
 	if (MainUI) MainUI->RemoveFromParent();
 	if (OW) OW->RemoveFromParent();
-	if (FIO) FIO->RemoveFromParent();
+	if (FIO != nullptr) FIO->RemoveFromParent();
 	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
 	GO->AddToViewport(5);
 	GO->FadeOut();
@@ -340,9 +345,10 @@ void AKSGameModeBase::GameOver()
 
 void AKSGameModeBase::GameClear()
 {
+	IsAlive = false;
 	if (MainUI) MainUI->RemoveFromParent();
 	if (OW) OW->RemoveFromParent();
-	if (FIO) FIO->RemoveFromParent();
+	if (FIO != nullptr) FIO->RemoveFromParent();
 	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
 	GO->AddToViewport(5);
 	GO->GameClear();

@@ -55,6 +55,7 @@ private:
 	int32 FoodToday[5];
 	bool IsTableFull[5];
 	bool IsOpen = false;
+	bool IsAlive = true;
 
 	FTimerHandle TimerHandle;
 	FTimerHandle FadeHandle;
