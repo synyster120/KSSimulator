@@ -26,16 +26,24 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
+	UPROPERTY()
 	TSubclassOf<class UGameMainWidget> MainUIClass;
+	UPROPERTY()
 	class UGameMainWidget* MainUI = nullptr;
 
+	UPROPERTY()
 	TSubclassOf<class UOrderingWidget> OWClass;
+	UPROPERTY()
 	class UOrderingWidget* OW = nullptr;
 
+	UPROPERTY()
 	TSubclassOf<class UFadeInOutWidget> FIOClass;
+	UPROPERTY()
 	class UFadeInOutWidget* FIO = nullptr;
 
+	UPROPERTY()
 	TSubclassOf<class UGameOverWidget> GOClass;
+	UPROPERTY()
 	class UGameOverWidget* GO = nullptr;
 
 	class AFoodCountActor* FoodCountActor;
