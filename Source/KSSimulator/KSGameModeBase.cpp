@@ -49,8 +49,14 @@ void AKSGameModeBase::BeginPlay()
 	PC = UGameplayStatics::GetPlayerController(this, 0);
 	OrderManager = NewObject<UOrderManager>(this);
 	Money = 50000;
-	for (int32 i = 0;i < 4;i++) FoodCount[i] = 10;
-
+	for (int32 i = 0;i < 4;i++) 
+	{
+		FoodCount[i] = 10;
+		for (int32 j = 0;j < 10;j++) {
+			FoodQ[i].Enqueue(1);
+		}
+		FoodToday[i] = 10;
+	}
 
 	FoodCountActor = GetWorld()->SpawnActor<AFoodCountActor>(FoodCountActorClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator);
 	FoodCountActor->SetActorLocation(FVector(0.f, 0.f, 0.f));
@@ -85,12 +91,21 @@ void AKSGameModeBase::NewDay()
 		APawn* Pawn = Cast<APawn>(BPInstance);
 		AController* Controller = Pawn->GetController();
 
-		/*Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));*/
-		/*BPInstance->SetActorLocation(FVector(1040.f, -1630.f, 448.f), true);*/
+		UE_LOG(LogTemp, Warning, TEXT("HH"));
+		Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));
+		BPInstance->SetActorLocation(FVector(1040.f, -1630.f, 448.f), true);
 	}
 
-	for (int32 i = 0; i < 5;i++)
+	for (int32 i = 0; i < 4;i++)
 	{
+		if (FoodToday[i] < FoodCount[i])
+		{
+			for (int32 j = 0;j < FoodCount[i] - FoodToday[i];j++)
+			{
+				FoodQ[i].Enqueue(Day);
+			}
+		}
+		FoodToday[i] = FoodCount[i];
 		IsTableFull[i] = false;
 	}
 
@@ -122,7 +137,7 @@ void AKSGameModeBase::NewDay()
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	GetWorldTimerManager().ClearTimer(FadeHandle);
 	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, false);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 5.f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 3.f, true);
 }
 
 void AKSGameModeBase::FadeInFin()
@@ -156,7 +171,6 @@ bool AKSGameModeBase::GetTable(int TableNum)
 
 void AKSGameModeBase::UpdateTime()
 {
-	SetRating(-0.5f);
 	Time += 5;
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60)
@@ -270,6 +284,22 @@ void AKSGameModeBase::EndDay()
 		{
 			Actor->Destroy();
 		}
+	}
+
+	for (int i = 0; i < 4;i++)
+	{
+		for (int j = 0; j < FoodToday[i] - FoodCount[i];j++)
+		{
+			FoodQ[i].Pop();
+		}
+		int32 FV;
+		while (FoodQ[i].Peek(FV) && FV == Day - 1)
+		{
+			FoodQ[i].Pop();
+			FoodCount[i] -= 1;
+		}
+		FoodToday[i] = FoodCount[i];
+		FoodCountActor->SetFoodCount(i, FoodToday[i]);
 	}
 
 	if (PC)
