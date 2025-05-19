@@ -44,7 +44,6 @@ void UOrderManager::OrderOut(int32 OrderNum)
 
 void UOrderManager::EndDay()
 {
-    OI.Empty();
     for (UTextBlock* TextBlock : OrderTextBlocks)
     {
         GameMainWidget->OrderListBox->RemoveChild(TextBlock);

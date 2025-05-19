@@ -51,11 +51,11 @@ void AKSGameModeBase::BeginPlay()
 	Money = 50000;
 	for (int32 i = 0;i < 4;i++) 
 	{
-		FoodCount[i] = 10;
-		for (int32 j = 0;j < 10;j++) {
+		FoodCount[i] = 15;
+		for (int32 j = 0;j < 15;j++) {
 			FoodQ[i].Enqueue(1);
 		}
-		FoodToday[i] = 10;
+		FoodToday[i] = 15;
 	}
 
 	FoodCountActor = GetWorld()->SpawnActor<AFoodCountActor>(FoodCountActorClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator);
@@ -66,7 +66,7 @@ void AKSGameModeBase::BeginPlay()
 		if (MainUI)
 		{
 			OrderManager->SetWidget(MainUI);
-			MainUI->AddToViewport();
+			MainUI->AddToViewport(3);
 			SetMoney(0);
 			NewDay();
 		}
@@ -77,6 +77,7 @@ void AKSGameModeBase::NewDay()
 {
 	Day += 1;
 	MainUI->DayText->SetText(FText::FromString(FString::Printf(TEXT("Day %d"), Day)));
+	MainUI->OrderText->SetText(FText::FromString("Orders"));
 	IsOpen = false;
 
 	UClass* BPClass = LoadClass<AActor>(nullptr, TEXT("/Game/Blueprints/BP_KSSPlayer.BP_KSSPlayer_C"));
@@ -92,7 +93,7 @@ void AKSGameModeBase::NewDay()
 		AController* Controller = Pawn->GetController();
 
 		Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));
-		BPInstance->SetActorLocation(FVector(1040.f, -1630.f, 448.f), true);
+		BPInstance->SetActorLocation(FVector(1040.f, -1630.f, 448.f));
 	}
 
 	for (int32 i = 0; i < 4;i++)
@@ -119,7 +120,7 @@ void AKSGameModeBase::NewDay()
 	else
 	{
 		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
-		FIO->AddToViewport();
+		FIO->AddToViewport(4);
 		FIO->FadeIn();
 	}
 	if (PC)
@@ -129,14 +130,14 @@ void AKSGameModeBase::NewDay()
 	}
 	TimeDilationSet(1.f);
 
-	Time = 500;
+	Time = 530;
 	SetMoney(0);
 	UpdateTime();
 
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	GetWorldTimerManager().ClearTimer(FadeHandle);
 	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, false);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 4.f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 3.f, true);
 }
 
 void AKSGameModeBase::FadeInFin()
@@ -212,7 +213,7 @@ int32 AKSGameModeBase::GetMoney()
 
 void AKSGameModeBase::SetRating(float R)
 {
-	Rating += R;
+	//Rating += R;
 	if (Rating < 0) Rating = 0;
 	else if (Rating > 5) Rating = 5.0f;
 	if (MainUI)
@@ -261,7 +262,7 @@ void AKSGameModeBase::BeforeEndDay()
 	if (FIOClass)
 	{
 		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
-		FIO->AddToViewport();
+		FIO->AddToViewport(4);
 		FIO->FadeOut();
 	}
 
@@ -272,6 +273,8 @@ void AKSGameModeBase::BeforeEndDay()
 void AKSGameModeBase::EndDay()
 {
 	TimeDilationSet(0.f);
+
+	OrderManager->EndDay();
 
 	UWorld* World = GetWorld();
 	if (!World) return;
@@ -310,13 +313,18 @@ void AKSGameModeBase::EndDay()
 	if (OWClass != nullptr)
 	{
 		OW = CreateWidget<UOrderingWidget>(GetWorld(), OWClass);
-		OW->AddToViewport();
+		OW->AddToViewport(2);
 	}
 	if (MainUI)
 	{
-		MainUI->AddToViewport();
 		MainUI->Time->SetText(FText::FromString(""));
 		MainUI->DayText->SetText(FText::FromString(""));
+		MainUI->OrderText->SetText(FText::FromString(""));
+	}
+	if (FIO)
+	{
+		FIO->RemoveFromParent();
+		FIO->AddToViewport(1);
 	}
 }
 
@@ -326,7 +334,7 @@ void AKSGameModeBase::GameOver()
 	if (OW) OW->RemoveFromParent();
 	if (FIO) FIO->RemoveFromParent();
 	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
-	GO->AddToViewport();
+	GO->AddToViewport(5);
 	GO->FadeOut();
 }
 
@@ -336,7 +344,7 @@ void AKSGameModeBase::GameClear()
 	if (OW) OW->RemoveFromParent();
 	if (FIO) FIO->RemoveFromParent();
 	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
-	GO->AddToViewport();
+	GO->AddToViewport(5);
 	GO->GameClear();
 }
 
