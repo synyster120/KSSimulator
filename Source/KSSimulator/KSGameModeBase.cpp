@@ -213,7 +213,7 @@ int32 AKSGameModeBase::GetMoney()
 
 void AKSGameModeBase::SetRating(float R)
 {
-	//Rating += R;
+	Rating += R;
 	if (Rating < 0) Rating = 0;
 	else if (Rating > 5) Rating = 5.0f;
 	if (MainUI)
