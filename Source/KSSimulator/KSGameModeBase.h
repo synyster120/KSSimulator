@@ -8,6 +8,7 @@
 #include "Food.h"
 #include "OrderManager.h"
 #include "FoodCountWidget.h"
+#include "Containers/Queue.h"
 #include "KSGameModeBase.generated.h"
 
 /**
@@ -40,6 +41,7 @@ protected:
 	class AFoodCountActor* FoodCountActor;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AFoodCountActor> FoodCountActorClass;
+	TQueue<int32> FoodQ[5];
 
 private:
 	int32 Money;
@@ -50,6 +52,7 @@ private:
 	int32 Day = 0;
 	FString TimeStr;
 	int32 FoodCount[5];
+	int32 FoodToday[5];
 	bool IsTableFull[5];
 	bool IsOpen = false;
 
