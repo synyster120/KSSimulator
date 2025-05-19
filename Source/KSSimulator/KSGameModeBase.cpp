@@ -85,8 +85,8 @@ void AKSGameModeBase::NewDay()
 		APawn* Pawn = Cast<APawn>(BPInstance);
 		AController* Controller = Pawn->GetController();
 
-		Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));
-		BPInstance->SetActorRelativeLocation(FVector(1040.f, -1630.f, 448.f));
+		/*Controller->SetControlRotation(FRotator(0.f, 90.f, 0.f));*/
+		/*BPInstance->SetActorLocation(FVector(1040.f, -1630.f, 448.f), true);*/
 	}
 
 	for (int32 i = 0; i < 5;i++)
@@ -122,7 +122,7 @@ void AKSGameModeBase::NewDay()
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	GetWorldTimerManager().ClearTimer(FadeHandle);
 	GetWorldTimerManager().SetTimer(FadeHandle, this, &AKSGameModeBase::FadeInFin, 2.5f, false);
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 0.3f, true);//10.f, true);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKSGameModeBase::UpdateTime, 5.f, true);
 }
 
 void AKSGameModeBase::FadeInFin()
@@ -156,7 +156,8 @@ bool AKSGameModeBase::GetTable(int TableNum)
 
 void AKSGameModeBase::UpdateTime()
 {
-	Time += 10;
+	SetRating(-0.5f);
+	Time += 5;
 	TimeStr = FString::Printf(TEXT("%02d"), Time < 780 ? Time / 60 : (Time - 720) / 60)
 		+ ":" + FString::Printf(TEXT("%02d"), Time % 60)
 		+ FString::Printf(TEXT(" %s"), Time >= 720 ? TEXT("PM") : TEXT("AM"));
