@@ -72,6 +72,7 @@ void AKSGameModeBase::BeginPlay()
 		}
 	}
 	if (FIOClass != nullptr) FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
+	if(GOClass != nullptr) GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
 }
 
 void AKSGameModeBase::NewDay()
@@ -335,9 +336,10 @@ void AKSGameModeBase::GameOver()
 	IsAlive = false;
 	if (MainUI) MainUI->RemoveFromParent();
 	if (OW) OW->RemoveFromParent();
-	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
-	GO->AddToViewport(5);
-	GO->FadeOut();
+	if (GO) {
+		GO->AddToViewport(5);
+		GO->FadeOut();
+	}
 }
 
 void AKSGameModeBase::GameClear()
@@ -345,9 +347,10 @@ void AKSGameModeBase::GameClear()
 	IsAlive = false;
 	if (MainUI) MainUI->RemoveFromParent();
 	if (OW) OW->RemoveFromParent();
-	GO = CreateWidget<UGameOverWidget>(GetWorld(), GOClass);
-	GO->AddToViewport(5);
-	GO->GameClear();
+	if (GO) {
+		GO->AddToViewport(5);
+		GO->GameClear();
+	}
 }
 
 void AKSGameModeBase::Restart()

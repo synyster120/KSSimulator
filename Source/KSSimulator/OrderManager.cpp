@@ -31,12 +31,15 @@ void UOrderManager::OrderOut(int32 OrderNum)
     {
         if (OI[i].OrderNum == OrderNum)
         {
-            if (GameMainWidget->OrderListBox && OrderTextBlocks.IsValidIndex(i))
+            if (OrderTextBlocks.IsValidIndex(i))
             {
-                GameMainWidget->OrderListBox->RemoveChild(OrderTextBlocks[i]);
+                if (GameMainWidget && GameMainWidget->OrderListBox)
+                {
+                    GameMainWidget->OrderListBox->RemoveChild(OrderTextBlocks[i]);
+                }
+                OrderTextBlocks.RemoveAt(i);
             }
             OI.RemoveAt(i);
-            OrderTextBlocks.RemoveAt(i);
             break;
         }
     }
