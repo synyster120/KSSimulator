@@ -119,7 +119,6 @@ void AKSGameModeBase::NewDay()
 	if (FIO)
 	{
 		if (FIO->IsInViewport()) FIO->RemoveFromParent();
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 		FIO->AddToViewport(4);
 		FIO->FadeIn();
 	}
@@ -187,6 +186,7 @@ void AKSGameModeBase::UpdateTime()
 void AKSGameModeBase::SetMoney(int32 M)
 {
 	if (IsAlive) {
+		if (Money + M < 0) GameOver(1);
 		Money += M;
 
 		if (MainUI)
@@ -202,7 +202,7 @@ void AKSGameModeBase::SetMoney(int32 M)
 				PC->SetInputMode(FInputModeUIOnly());
 			}
 			TimeDilationSet(0.f);
-			GameClear();
+			GameOver(2);
 		}
 	}
 }
@@ -230,7 +230,7 @@ void AKSGameModeBase::SetRating(float R)
 				PC->SetInputMode(FInputModeUIOnly());
 			}
 			TimeDilationSet(0.f);
-			GameOver();
+			GameOver(0);
 		}
 	}
 }
@@ -264,7 +264,6 @@ void AKSGameModeBase::BeforeEndDay()
 {
 	if (FIO)
 	{
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 		FIO->AddToViewport(4);
 		FIO->FadeOut();
 	}
@@ -290,6 +289,7 @@ void AKSGameModeBase::EndDay()
 			Actor->Destroy();
 		}
 	}
+	SetMoney(-20000);
 
 	for (int i = 0; i < 4;i++)
 	{
@@ -327,30 +327,26 @@ void AKSGameModeBase::EndDay()
 	if (FIO)
 	{
 		if(FIO->IsInViewport()) FIO->RemoveFromParent();
-		FIO = CreateWidget<UFadeInOutWidget>(GetWorld(), FIOClass);
 		FIO->AddToViewport(1);
 	}
 }
 
-void AKSGameModeBase::GameOver()
+void AKSGameModeBase::GameOver(int32 OverStat)
 {
 	IsAlive = false;
 	if (MainUI) MainUI->RemoveFromParent();
 	if (OW) OW->RemoveFromParent();
-	if (GO) {
-		GO->AddToViewport(5);
-		GO->FadeOut();
+	if (FIO && FIO->IsInViewport()) FIO->RemoveFromParent();
+	if (PC)
+	{
+		PC->bShowMouseCursor = true;
+		PC->SetInputMode(FInputModeUIOnly());
 	}
-}
-
-void AKSGameModeBase::GameClear()
-{
-	IsAlive = false;
-	if (MainUI) MainUI->RemoveFromParent();
-	if (OW) OW->RemoveFromParent();
 	if (GO) {
 		GO->AddToViewport(5);
-		GO->GameClear();
+		if (OverStat == 0) GO->GameOver1();
+		else if (OverStat == 1) GO->GameOver2();
+		else if (OverStat == 2 ) GO->GameClear();
 	}
 }
 

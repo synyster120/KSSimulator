@@ -120,8 +120,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetTable(int TableNum);
 
-	void GameOver();
-	void GameClear();
+	void GameOver(int32 OverStat);
 	void Restart();
 	void End();
 };

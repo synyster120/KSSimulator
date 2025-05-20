@@ -54,7 +54,8 @@ public:
 
 	bool IsClear = false;
 
-	void FadeOut();
+	void GameOver1();
+	void GameOver2();
 	void GameClear();
 
 	AKSGameModeBase* KSGameModeBase;

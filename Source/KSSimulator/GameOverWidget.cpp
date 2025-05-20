@@ -7,9 +7,15 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/Button.h"
 
-void UGameOverWidget::FadeOut()
+void UGameOverWidget::GameOver1()
 {
 	PlayAnimation(GameOverAnimation);
+}
+
+void UGameOverWidget::GameOver2()
+{
+	PlayAnimation(GameOverAnimation);
+	GameOverText2->SetText(FText::FromString("No Money"));
 }
 
 void UGameOverWidget::GameClear()
