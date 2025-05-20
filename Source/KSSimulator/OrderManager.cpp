@@ -9,8 +9,6 @@ void UOrderManager::NewDay()
     OrderTextBlocks.Empty();
     GameMainWidget->OrderListBox->ClearChildren();
 	OrderNumber = 0;
-    int32 didididi = GameMainWidget->OrderListBox->HasAnyChildren() ? 1 : 0;
-    UE_LOG(LogTemp, Warning, TEXT("%d %d %d"), OI.Num(), OrderTextBlocks.Num(), didididi);
 }
 
 int32 UOrderManager::OrderIn(int32 TableNum, int32 FoodNum)
