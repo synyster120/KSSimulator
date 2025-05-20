@@ -81,6 +81,7 @@ void AKSGameModeBase::NewDay()
 	MainUI->DayText->SetText(FText::FromString(FString::Printf(TEXT("Day %d"), Day)));
 	MainUI->OrderText->SetText(FText::FromString("Orders"));
 	IsOpen = false;
+	OrderManager->NewDay();
 
 	UClass* BPClass = LoadClass<AActor>(nullptr, TEXT("/Game/Blueprints/BP_KSSPlayer.BP_KSSPlayer_C"));
 	if (!BPClass) return;

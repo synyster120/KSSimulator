@@ -39,6 +39,7 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget));
 	class UTextBlock* OrderText;
 
+	UPROPERTY()
 	TArray<UTextBlock*> OrderTextBlocks; 
 
 	void SetWidget(UGameMainWidget* InWidget);
